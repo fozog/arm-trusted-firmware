@@ -102,9 +102,24 @@ int marvell_bl2_handle_post_image_load(unsigned int image_id)
 	switch (image_id) {
 
 	case BL33_IMAGE_ID:
+#if ARM_LINUX_KERNEL_AS_BL33
+        /*
+         * According to the file ``Documentation/arm64/booting.txt`` of
+         * the Linux kernel tree, Linux expects the physical address of
+         * the device tree blob (DTB) in x0, while x1-x3 are reserved
+         * for future use and must be 0.
+         */
+        bl_mem_params->ep_info.args.arg0 = (u_register_t)MARVELL_BL33_DTB;
+        bl_mem_params->ep_info.args.arg1 = 0U;
+        bl_mem_params->ep_info.args.arg2 = 0U;
+        bl_mem_params->ep_info.args.arg3 = 0U;
+		bl_mem_params->ep_info.spsr = marvell_get_spsr_for_bl33_entry();
+#else
+
 		/* BL33 expects to receive the primary CPU MPID (through r0) */
 		bl_mem_params->ep_info.args.arg0 = 0xffff & read_mpidr();
 		bl_mem_params->ep_info.spsr = marvell_get_spsr_for_bl33_entry();
+#endif
 		break;
 #ifdef SCP_BL2_BASE
 	case SCP_BL2_IMAGE_ID:

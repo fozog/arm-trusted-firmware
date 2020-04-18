@@ -880,6 +880,7 @@ $(eval $(call assert_boolean,SPM_MM))
 $(eval $(call assert_boolean,SPMD_SPM_AT_SEL2))
 $(eval $(call assert_boolean,TRUSTED_BOARD_BOOT))
 $(eval $(call assert_boolean,USE_COHERENT_MEM))
+$(eval $(call assert_boolean,ARM_LINUX_KERNEL_AS_BL33))
 $(eval $(call assert_boolean,USE_DEBUGFS))
 $(eval $(call assert_boolean,ARM_IO_IN_DTB))
 $(eval $(call assert_boolean,USE_ROMLIB))
@@ -967,6 +968,7 @@ $(eval $(call add_define,BL2_AT_EL3))
 $(eval $(call add_define,BL2_IN_XIP_MEM))
 $(eval $(call add_define,BL2_INV_DCACHE))
 $(eval $(call add_define,USE_SPINLOCK_CAS))
+$(eval $(call add_define,ARM_LINUX_KERNEL_AS_BL33))
 
 ifeq (${SANITIZE_UB},trap)
         $(eval $(call add_define,MONITOR_TRAPS))
@@ -1090,6 +1092,7 @@ endif
 
 # Add the BL33 image if required by the platform
 ifeq (${NEED_BL33},yes)
+$(if ${BL33_DTB}, $(eval $(call TOOL_ADD_IMG,bl33_dtb,--nt-fw-config)))
 $(eval $(call TOOL_ADD_IMG,bl33,--nt-fw))
 endif
 

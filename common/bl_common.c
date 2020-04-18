@@ -89,7 +89,6 @@ static int load_image(unsigned int image_id, image_info_t *image_data)
 			image_id, io_result);
 		return io_result;
 	}
-
 	/* Attempt to access the image */
 	io_result = io_open(dev_handle, image_spec, &image_handle);
 	if (io_result != 0) {

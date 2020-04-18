@@ -46,6 +46,9 @@ static const io_uuid_spec_t bl32_uuid_spec = {
 static const io_uuid_spec_t bl33_uuid_spec = {
 	.uuid = UUID_NON_TRUSTED_FIRMWARE_BL33,
 };
+static const io_uuid_spec_t bl33_config_uuid_spec = {
+	.uuid = UUID_NT_FW_CONFIG,
+};
 
 static int open_fip(const uintptr_t spec);
 static int open_memmap(const uintptr_t spec);
@@ -57,7 +60,7 @@ struct plat_io_policy {
 };
 
 /* By default, Marvell platforms load images from the FIP */
-static const struct plat_io_policy policies[] = {
+static const struct plat_io_policy policies[NT_FW_CONFIG_ID+1] = {
 	[FIP_IMAGE_ID] = {
 		&memmap_dev_handle,
 		(uintptr_t)&fip_block_spec,
@@ -86,6 +89,11 @@ static const struct plat_io_policy policies[] = {
 	[BL33_IMAGE_ID] = {
 		&fip_dev_handle,
 		(uintptr_t)&bl33_uuid_spec,
+		open_fip
+	},
+	[NT_FW_CONFIG_ID] = {
+		&fip_dev_handle,
+		(uintptr_t)&bl33_config_uuid_spec,
 		open_fip
 	},
 };

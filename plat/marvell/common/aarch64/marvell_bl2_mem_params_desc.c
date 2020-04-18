@@ -102,6 +102,23 @@ static bl_mem_params_node_t bl2_mem_params_descs[] = {
     },
 # endif /* BL32_BASE */
 
+#ifdef ARM_LINUX_KERNEL_AS_BL33
+    {
+	    .image_id = NT_FW_CONFIG_ID,
+
+	    SET_STATIC_PARAM_HEAD(ep_info, PARAM_IMAGE_BINARY,
+		    VERSION_2, entry_point_info_t, NON_SECURE | NON_EXECUTABLE),
+		.ep_info.pc = MARVELL_BL33_DTB,
+
+	    SET_STATIC_PARAM_HEAD(image_info, PARAM_IMAGE_BINARY,
+		    VERSION_2, image_info_t, 0),
+	    .image_info.image_base = MARVELL_BL33_DTB,
+	    .image_info.image_max_size = MARVELL_BL33_DTB_SIZE,
+
+	    .next_handoff_image_id = INVALID_IMAGE_ID,
+    },
+#endif
+
 	/* Fill BL33 related information */
     {
 	    .image_id = BL33_IMAGE_ID,
@@ -113,12 +130,16 @@ static bl_mem_params_node_t bl2_mem_params_descs[] = {
 	    SET_STATIC_PARAM_HEAD(image_info, PARAM_EP,
 		    VERSION_2, image_info_t, IMAGE_ATTRIB_SKIP_LOADING),
 # else
-	    .ep_info.pc = MARVELL_DRAM_BASE,
+	    .ep_info.pc = MARVELL_DRAM_BASE +
+			MARVELL_BL33_DTB_SIZE + MARVELL_KERNEL_TEXT_OFFSET,
+
 
 	    SET_STATIC_PARAM_HEAD(image_info, PARAM_EP,
 		    VERSION_2, image_info_t, 0),
-	    .image_info.image_base = MARVELL_DRAM_BASE,
-	    .image_info.image_max_size = MARVELL_DRAM_SIZE,
+	    .image_info.image_base =  MARVELL_DRAM_BASE
+			+ MARVELL_BL33_DTB_SIZE + MARVELL_KERNEL_TEXT_OFFSET,
+	    .image_info.image_max_size = MARVELL_DRAM_SIZE -
+			MARVELL_BL33_DTB_SIZE - MARVELL_KERNEL_TEXT_OFFSET,
 # endif /* PRELOADED_BL33_BASE */
 
 	    .next_handoff_image_id = INVALID_IMAGE_ID,
