@@ -56,5 +56,6 @@ int plat_setup_psci_ops(uintptr_t sec_entrypoint,
 
 	/* Setup mailbox with entry point. */
 	marvell_program_mailbox(sec_entrypoint);
+
 	return 0;
 }

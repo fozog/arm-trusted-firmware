@@ -3,6 +3,8 @@
 # SPDX-License-Identifier:     BSD-3-Clause
 # https://spdx.org/licenses
 
+include lib/libfdt/libfdt.mk
+
 # Marvell images
 BOOT_IMAGE			:= boot-image.bin
 BOOT_ENC_IMAGE			:= boot-image-enc.bin

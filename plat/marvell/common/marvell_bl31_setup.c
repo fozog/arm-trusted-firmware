@@ -15,6 +15,7 @@
 #endif
 #include <drivers/console.h>
 #include <plat/common/platform.h>
+#include <libfdt.h>
 
 #include <marvell_def.h>
 #include <marvell_plat_priv.h>

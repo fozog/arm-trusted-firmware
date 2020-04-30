@@ -51,7 +51,8 @@ BL2_SOURCES		+=	drivers/io/io_fip.c					\
 				$(MARVELL_PLAT_BASE)/common/marvell_bl2_setup.c		\
 				$(MARVELL_PLAT_BASE)/common/marvell_io_storage.c	\
 				$(MARVELL_PLAT_BASE)/common/aarch64/marvell_bl2_mem_params_desc.c	\
-				$(MARVELL_PLAT_BASE)/common/marvell_image_load.c
+				$(MARVELL_PLAT_BASE)/common/marvell_image_load.c	\
+				common/fdt_fixup.c
 
 
 BL31_SOURCES		+=	$(MARVELL_PLAT_BASE)/common/marvell_bl31_setup.c	\
