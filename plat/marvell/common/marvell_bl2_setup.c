@@ -17,6 +17,9 @@
 #include <drivers/console.h>
 #include <lib/utils.h>
 
+#include <tf_gunzip.h>
+#include <common/image_decompress.h>
+
 #include <common/fdt_fixup.h>
 #include <libfdt.h>
 
@@ -158,6 +161,26 @@ int marvell_bl2_handle_post_image_load(unsigned int image_id)
 
 	case BL33_IMAGE_ID:
 #if ARM_LINUX_KERNEL_AS_BL33
+		/* lets decompress the image and position it where it should be */
+		{
+			/* bl_mem_params->image_info was set to MARVELL_BL33_GZBASE to load the image at this place
+			now we need to set image info so that the destination is properly set */
+
+			bl_mem_params->image_info.image_base =
+				MARVELL_BL33_BASE + MARVELL_KERNEL_TEXT_OFFSET;
+			bl_mem_params->image_info.image_max_size =
+				MARVELL_BL33_GZBASE - MARVELL_BL33_BASE - MARVELL_KERNEL_TEXT_OFFSET
+			;
+			/* initialize the decompressor with the origin */
+			image_decompress_init(MARVELL_BL33_GZBASE, MARVELL_BL33_GZSIZE, gunzip);
+
+			image_decompress_prepare(&bl_mem_params->image_info);
+			NOTICE("About to decompress\n");
+			err = image_decompress(&bl_mem_params->image_info);
+
+			if (err)
+				return err;
+		}
         /*
          * According to the file ``Documentation/arm64/booting.txt`` of
          * the Linux kernel tree, Linux expects the physical address of

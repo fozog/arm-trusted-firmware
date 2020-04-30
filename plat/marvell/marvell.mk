@@ -4,6 +4,7 @@
 # https://spdx.org/licenses
 
 include lib/libfdt/libfdt.mk
+include lib/zlib/zlib.mk
 
 # Marvell images
 BOOT_IMAGE			:= boot-image.bin
