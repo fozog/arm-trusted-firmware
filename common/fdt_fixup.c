@@ -218,3 +218,54 @@ int fdt_add_reserved_memory(void *dtb, const char *node_name,
 {
 	return fdt_add_reserved_memory_ex(dtb, node_name, "no-map", base, size);
 }
+
+#define MAX_AREAS 8
+int fdt_set_usable_memory(void *dtb, const char* mem_path, uintptr_t start[], uintptr_t size[], uint8_t nr_areas)
+{
+	/* TODO proper sensing cell sizes */
+	int address_cells=2;
+	int size_cells=2;
+	char tmp[sizeof(uint64_t)*2*MAX_AREAS];
+	fdt32_t* ptr = (fdt32_t*)tmp;
+	int err=0;
+	if (nr_areas >= MAX_AREAS) {
+		return -1;
+	}
+	int offs = fdt_path_offset(dtb, mem_path);
+
+	if (offs < 0) {			/* create if not existing yet */
+		offs = fdt_add_subnode(dtb, 0, mem_path);
+		if (offs < 0)
+			return offs;
+		/* TODO adapt to real cells */
+		if ((err=fdt_setprop_u32(dtb, offs, "#address-cells", address_cells)) < 0)
+			return err;
+		if ((err=fdt_setprop_u32(dtb, offs, "#size-cells", size_cells))<0)
+			return err;
+		//fdt_setprop(dtb, offs, "ranges", NULL, 0);
+		if ((err = fdt_setprop(dtb, offs, "device_type", "memory",
+			sizeof("memory")))<0)
+			return err;
+	}
+
+	/* use 32 bits accessors otherwise unaligned 64 bits kills us */
+	int i;
+	for(i=0; i<nr_areas; i++) {
+		if (address_cells==2) {
+			*ptr++= cpu_to_fdt32(HIGH_BITS(start[i]));
+			*ptr++= cpu_to_fdt32(start[i] & 0xffffffff);
+		}
+		else {
+			*ptr++= cpu_to_fdt32(start[i]);
+		}
+		if (size_cells==2) {
+			*ptr++= cpu_to_fdt32(HIGH_BITS(size[i]));
+			*ptr++= cpu_to_fdt32(size[i] & 0xffffffff);
+		}
+		else {
+			*ptr++= cpu_to_fdt32(start[i]);
+		}
+	}
+	err = fdt_setprop(dtb, offs, "reg", tmp, (char*)ptr - tmp);
+	return err;
+}
