@@ -130,16 +130,14 @@ static bl_mem_params_node_t bl2_mem_params_descs[] = {
 	    SET_STATIC_PARAM_HEAD(image_info, PARAM_EP,
 		    VERSION_2, image_info_t, IMAGE_ATTRIB_SKIP_LOADING),
 # else
-	    .ep_info.pc = MARVELL_DRAM_BASE +
-			MARVELL_BL33_DTB_SIZE + MARVELL_KERNEL_TEXT_OFFSET,
+	    .ep_info.pc = MARVELL_BL33_BASE + MARVELL_KERNEL_TEXT_OFFSET,
 
 
 	    SET_STATIC_PARAM_HEAD(image_info, PARAM_EP,
 		    VERSION_2, image_info_t, 0),
-	    .image_info.image_base =  MARVELL_DRAM_BASE
-			+ MARVELL_BL33_DTB_SIZE + MARVELL_KERNEL_TEXT_OFFSET,
+	    .image_info.image_base =  MARVELL_BL33_BASE + MARVELL_KERNEL_TEXT_OFFSET,
 	    .image_info.image_max_size = MARVELL_DRAM_SIZE -
-			MARVELL_BL33_DTB_SIZE - MARVELL_KERNEL_TEXT_OFFSET,
+			MARVELL_BL33_BASE - MARVELL_KERNEL_TEXT_OFFSET,
 # endif /* PRELOADED_BL33_BASE */
 
 	    .next_handoff_image_id = INVALID_IMAGE_ID,
