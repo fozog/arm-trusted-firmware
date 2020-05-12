@@ -65,7 +65,7 @@
 #define MARVELL_BL33_BASE			ULL(0x200000)
 #define MARVELL_BL33_DTB_SIZE		(MARVELL_BL33_BASE- MARVELL_BL33_DTB) /* 2MB boot align required */
 #define MARVELL_KERNEL_TEXT_OFFSET	ULL(0x00080000) /* from Image header */
-#define MARVELL_BL33_GZSIZE 			(ULL(0x400000)) /* 4MB below ATF, 4MB is size of eMMC boot partition */
+#define MARVELL_BL33_GZSIZE 			(ULL(0x800000)) /* 8MB below ATF, 4MB is size of eMMC boot partition */
 #define MARVELL_BL33_GZBASE			(PLAT_MARVELL_ATF_BASE- MARVELL_BL33_GZSIZE) /* 4MB below ATF, 4MB is size of eMMC boot partition */
 #else
 #define MARVELL_BL33_DTB_SIZE		0
